@@ -3,94 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Focus Sound Box</title>
+    <title>静寂の作業部屋</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="data:application/json;base64,ewogICJpY29uIjogW3sgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTkwLzI5OTAzMjgucG5nIiwgInNpemVzIjogIjUxMng1MTIiLCAidHlwZSI6ICJpbWFnZS9wbmciIH1dLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgIm5hbWUiOiAiRm9jdXNTb3VuZCJ9">
-    
     <style>
         body {
             margin: 0;
-            background-color: #121212;
-            color: #e0e0e0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: sans-serif;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
-            overflow: hidden;
         }
-        .app-container {
-            width: 85%;
+        .container {
+            width: 80%;
+            max-width: 400px;
             text-align: center;
         }
-        h1 { font-weight: 300; font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 30px; color: #888; }
+        .title { font-size: 1.2rem; margin-bottom: 30px; letter-spacing: 0.1em; color: #8b949e; }
         .grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 15px;
         }
-        .btn {
-            background: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 25px 10px;
-            color: #ccc;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+        button {
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #58a6ff;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .btn:active { background: #333; transform: scale(0.95); }
-        .btn.active { border-color: #007bff; color: #007bff; background: #1a237e; }
-        .icon { font-size: 1.8rem; }
-        .stop-btn {
-            margin-top: 40px;
+        button:active { background: #30363d; transform: scale(0.98); }
+        .stop {
+            margin-top: 30px;
             background: transparent;
-            border: 1px solid #ff4444;
-            color: #ff4444;
-            padding: 10px 40px;
+            border: 1px solid #f85149;
+            color: #f85149;
+            padding: 10px 30px;
             border-radius: 30px;
+            font-size: 0.8rem;
+        }
+        /* プレイヤーを画面外に飛ばす */
+        #player-container {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
         }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <h1>FOCUS SOUND</h1>
+<div class="container">
+    <div class="title">作業に集中しましょう</div>
     <div class="grid">
-        <div class="btn" onclick="play('L727S_B7_P0', this)"><span class="icon">☕</span>カフェ</div>
-        <div class="btn" onclick="play('CHFif_y2PZc', this)"><span class="icon">🌧️</span>雨音</div>
-        <div class="btn" onclick="play('jfKfPfyJRdk', this)"><span class="icon">🔥</span>焚き火</div>
-        <div class="btn" onclick="play('H4f786v_yvE', this)"><span class="icon">🌲</span>森の音</div>
+        <button onclick="play('Bd6TRwOMGrM')">🔥 焚き火 (YouTube Music音源)</button>
+        <button onclick="play('L727S_B7_P0')">☕ カフェの雑音</button>
+        <button onclick="play('CHFif_y2PZc')">🌧️ 穏やかな雨</button>
     </div>
-    <button class="stop-btn" onclick="stopAll()">STOP</button>
+    <button class="stop" onclick="stopVideo()">音を止める</button>
 </div>
 
-<div id="player" style="position:fixed; top:-999px;"></div>
+<div id="player-container">
+    <div id="player"></div>
+</div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
     let player;
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-            height: '1', width: '1', videoId: '',
-            playerVars: { 'autoplay': 1, 'controls': 0, 'disablekb': 1, 'fs': 0 }
+            height: '1',
+            width: '1',
+            videoId: '',
+            playerVars: {
+                'playsinline': 1, // iOSで全画面にならないようにする
+                'loop': 1,
+                'playlist': '' // ループ用に後で設定
+            },
+            events: {
+                'onReady': onPlayerReady
+            }
         });
     }
 
-    function play(id, el) {
-        player.loadVideoById(id);
-        document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-        el.classList.add('active');
+    function onPlayerReady(event) {
+        // 準備完了
     }
 
-    function stopAll() {
+    function play(id) {
+        // ボタンを押した瞬間に再生を開始（スマホの制限を回避）
+        player.loadVideoById({
+            videoId: id,
+            suggestedQuality: 'small'
+        });
+        player.playVideo();
+    }
+
+    function stopVideo() {
         player.stopVideo();
-        document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
     }
 </script>
 </body>
