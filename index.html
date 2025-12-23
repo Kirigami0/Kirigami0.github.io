@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Focus Sound Box</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="data:application/json;base64,ewogICJpY29uIjogW3sgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTkwLzI5OTAzMjgucG5nIiwgInNpemVzIjogIjUxMng1MTIiLCAidHlwZSI6ICJpbWFnZS9wbmciIH1dLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgIm5hbWUiOiAiRm9jdXNTb3VuZCJ9">
+    
+    <style>
+        body {
+            margin: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .app-container {
+            width: 85%;
+            text-align: center;
+        }
+        h1 { font-weight: 300; font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 30px; color: #888; }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 25px 10px;
+            color: #ccc;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn:active { background: #333; transform: scale(0.95); }
+        .btn.active { border-color: #007bff; color: #007bff; background: #1a237e; }
+        .icon { font-size: 1.8rem; }
+        .stop-btn {
+            margin-top: 40px;
+            background: transparent;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 10px 40px;
+            border-radius: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <h1>FOCUS SOUND</h1>
+    <div class="grid">
+        <div class="btn" onclick="play('L727S_B7_P0', this)"><span class="icon">☕</span>カフェ</div>
+        <div class="btn" onclick="play('CHFif_y2PZc', this)"><span class="icon">🌧️</span>雨音</div>
+        <div class="btn" onclick="play('jfKfPfyJRdk', this)"><span class="icon">🔥</span>焚き火</div>
+        <div class="btn" onclick="play('H4f786v_yvE', this)"><span class="icon">🌲</span>森の音</div>
+    </div>
+    <button class="stop-btn" onclick="stopAll()">STOP</button>
+</div>
+
+<div id="player" style="position:fixed; top:-999px;"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+    let player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '1', width: '1', videoId: '',
+            playerVars: { 'autoplay': 1, 'controls': 0, 'disablekb': 1, 'fs': 0 }
+        });
+    }
+
+    function play(id, el) {
+        player.loadVideoById(id);
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function stopAll() {
+        player.stopVideo();
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+    }
+</script>
+</body>
+</html>
