@@ -2,110 +2,56 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>静寂の作業部屋</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>絵描きの番人</title>
     <style>
-        body {
-            margin: 0;
-            background-color: #0d1117;
-            color: #c9d1d9;
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            width: 80%;
-            max-width: 400px;
-            text-align: center;
-        }
-        .title { font-size: 1.2rem; margin-bottom: 30px; letter-spacing: 0.1em; color: #8b949e; }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        button {
-            background: #21262d;
-            border: 1px solid #30363d;
-            color: #58a6ff;
-            padding: 20px;
-            border-radius: 12px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        button:active { background: #30363d; transform: scale(0.98); }
-        .stop {
-            margin-top: 30px;
-            background: transparent;
-            border: 1px solid #f85149;
-            color: #f85149;
-            padding: 10px 30px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-        }
-        /* プレイヤーを画面外に飛ばす */
-        #player-container {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-        }
+        body { font-family: sans-serif; text-align: center; background: #f0f2f5; }
+        #guardian { font-size: 50px; margin-top: 50px; transition: 0.5s; }
+        #message { font-weight: bold; color: #333; margin: 20px; }
+        .timer { font-size: 30px; margin: 10px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="title">作業に集中しましょう</div>
-    <div class="grid">
-        <button onclick="play('Bd6TRwOMGrM')">🔥 焚き火 (YouTube Music音源)</button>
-        <button onclick="play('L727S_B7_P0')">☕ カフェの雑音</button>
-        <button onclick="play('CHFif_y2PZc')">🌧️ 穏やかな雨</button>
-    </div>
-    <button class="stop" onclick="stopVideo()">音を止める</button>
-</div>
+    <div id="guardian">o(^-^)o</div>
+    <div id="message">準備はいい？ペンを持って。</div>
+    <div class="timer" id="display">25:00</div>
+    
+    <button onclick="startTimer()">集中開始</button>
+    <button onclick="stopTimer()">サボる（一時停止）</button>
 
-<div id="player-container">
-    <div id="player"></div>
-</div>
+    <script>
+        let timeLeft = 1500; // 25分
+        let timerId = null;
 
-<script src="https://www.youtube.com/iframe_api"></script>
-<script>
-    let player;
-    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-            height: '1',
-            width: '1',
-            videoId: '',
-            playerVars: {
-                'playsinline': 1, // iOSで全画面にならないようにする
-                'loop': 1,
-                'playlist': '' // ループ用に後で設定
-            },
-            events: {
-                'onReady': onPlayerReady
-            }
-        });
-    }
+        function startTimer() {
+            if (timerId) return;
+            document.getElementById('guardian').innerText = "p(^_^)q";
+            document.getElementById('message').innerText = "いいよ、見てるからね。";
+            
+            timerId = setInterval(() => {
+                timeLeft--;
+                updateDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    document.getElementById('guardian').innerText = "(*'▽'*)";
+                    document.getElementById('message').innerText = "お疲れ様！最高の1枚になった？";
+                }
+            }, 1000);
+        }
 
-    function onPlayerReady(event) {
-        // 準備完了
-    }
+        function stopTimer() {
+            clearInterval(timerId);
+            timerId = null;
+            document.getElementById('guardian').innerText = "(; ･`д･´)";
+            document.getElementById('message').innerText = "えっ、どこ行くの？描かないの？";
+        }
 
-    function play(id) {
-        // ボタンを押した瞬間に再生を開始（スマホの制限を回避）
-        player.loadVideoById({
-            videoId: id,
-            suggestedQuality: 'small'
-        });
-        player.playVideo();
-    }
-
-    function stopVideo() {
-        player.stopVideo();
-    }
-</script>
+        function updateDisplay() {
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById('display').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+    </script>
 </body>
 </html>
